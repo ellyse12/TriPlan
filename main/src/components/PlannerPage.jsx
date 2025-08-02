@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CitySelector from "./CitySelector";
 
 const PlannerPage = () => {
   const navigate = useNavigate();
@@ -8,20 +9,6 @@ const PlannerPage = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [places, setPlaces] = useState([]);
   const [newPlace, setNewPlace] = useState("");
-
-  // Örnek şehir listesi
-  const cities = [
-    "İstanbul",
-    "Ankara",
-    "İzmir",
-    "Antalya",
-    "Bursa",
-    "Adana",
-    "Konya",
-    "Gaziantep",
-    "Mersin",
-    "Diyarbakır",
-  ];
 
   // Yeni yer ekleme fonksiyonu
   const handleAddPlace = () => {
@@ -69,79 +56,72 @@ const PlannerPage = () => {
           </p>
         </div>
 
-        {/* Şehir Seçimi */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Şehir Seç
-          </h2>
-          <select
-            value={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
-            className="w-full md:w-64 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            <option value="">Şehir seçin...</option>
-            {cities.map((city) => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Şehir Seçimi bileşeni */}
+        <CitySelector
+          selectedCity={selectedCity}
+          onCitySelect={setSelectedCity}
+        />
 
-        {/* Gezilecek Yerler Ekleme */}
-        {selectedCity && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              {selectedCity} için Gezilecek Yerler
-            </h2>
-
-            {/* Yer Ekleme Formu */}
-            <div className="flex flex-col md:flex-row gap-3 mb-6">
-              <input
-                type="text"
-                value={newPlace}
-                onChange={(e) => setNewPlace(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Gezilecek yer adını yazın..."
-                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-              <button
-                onClick={handleAddPlace}
-                className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-              >
-                Ekle
-              </button>
+        {/* Seçilen şehir bilgisi ve gezilecek yerler */}
+        {selectedCity ? (
+          <>
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <p className="text-lg text-gray-700">
+                Planlanan Şehir: <span className="font-semibold">{selectedCity}</span>
+              </p>
             </div>
 
-            {/* Eklenen Yerler Listesi */}
-            {places.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-700">
-                  Eklenen Yerler:
-                </h3>
-                {places.map((place) => (
-                  <div
-                    key={place.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                  >
-                    <span className="font-medium text-gray-800">
-                      {place.name}
-                    </span>
-                    <button
-                      onClick={() => handleRemovePlace(place.id)}
-                      className="text-red-500 hover:text-red-700 font-semibold"
-                    >
-                      Sil
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+            {/* Gezilecek Yerler Ekleme */}
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                {selectedCity} için Gezilecek Yerler
+              </h2>
 
-        {/* Bilgi Mesajı */}
-        {!selectedCity && (
+              {/* Yer Ekleme Formu */}
+              <div className="flex flex-col md:flex-row gap-3 mb-6">
+                <input
+                  type="text"
+                  value={newPlace}
+                  onChange={(e) => setNewPlace(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Gezilecek yer adını yazın..."
+                  className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <button
+                  onClick={handleAddPlace}
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+                >
+                  Ekle
+                </button>
+              </div>
+
+              {/* Eklenen Yerler Listesi */}
+              {places.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    Eklenen Yerler:
+                  </h3>
+                  {places.map((place) => (
+                    <div
+                      key={place.id}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                    >
+                      <span className="font-medium text-gray-800">
+                        {place.name}
+                      </span>
+                      <button
+                        onClick={() => handleRemovePlace(place.id)}
+                        className="text-red-500 hover:text-red-700 font-semibold"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-blue-800">
               Plan oluşturmaya başlamak için önce bir şehir seçin.
